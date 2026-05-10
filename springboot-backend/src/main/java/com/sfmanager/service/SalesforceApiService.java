@@ -58,8 +58,15 @@ public class SalesforceApiService {
     }
 
     public void toggleRule(SalesforceSession sf, String id, boolean active) throws Exception {
+        if (id == null || id.isEmpty()) {
+            throw new RuntimeException("Rule ID is null or empty");
+        }
         JsonNode existing = getRuleMetadata(sf, id);
-        ObjectNode meta   = (ObjectNode) mapper.readTree(existing.get("Metadata").toString());
+        JsonNode metaNode = existing.get("Metadata");
+        if (metaNode == null) {
+            throw new RuntimeException("Metadata not found for rule: " + id);
+        }
+        ObjectNode meta = (ObjectNode) mapper.readTree(metaNode.toString());
         meta.put("active", active);
 
         ObjectNode body = mapper.createObjectNode();
