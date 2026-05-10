@@ -45,7 +45,7 @@ export default function Login() {
           </div>
         </div>
 
-        <a href={`/auth/login?env=${env}`}
+        <a href={`${import.meta.env.VITE_API_URL}/auth/login?env=${env}`}
           className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#00a1e0] px-6 py-3.5 text-base font-semibold text-white shadow transition hover:bg-blue-600 active:scale-95">
           <svg width="20" height="20" viewBox="0 0 48 48" fill="none">
             <ellipse cx="24" cy="20" rx="18" ry="12" fill="white" fillOpacity="0.9"/>

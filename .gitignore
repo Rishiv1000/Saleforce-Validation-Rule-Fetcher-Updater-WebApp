@@ -6,6 +6,8 @@ npm-debug.log*
 .env
 .env.local
 springboot-backend/.env
+frontend/.env
+frontend/.env.production
 
 # Frontend build
 frontend/dist/

@@ -6,6 +6,7 @@ import ValidationRules from './pages/ValidationRules';
 import Spinner         from './components/Spinner';
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 export default function App() {
   const [user,    setUser]    = useState(null);
