@@ -1,4 +1,4 @@
-# SF Validation Manager
+# SF Validation Manager --->>> https://saleforce-validation-rule-fetcher-u.vercel.app/login
 
 > Manage Salesforce Account validation rules — fetch, enable, disable, and deploy changes directly from the browser.
 
