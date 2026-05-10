@@ -16,13 +16,6 @@
 
 ### 1. Clone the repo
 
-```bash
-git clone <repo-url>
-cd sf-validation-manager
-```
-
----
-
 ### 2. Create a Salesforce Connected App
 
 > Do this first — the backend needs these credentials.
