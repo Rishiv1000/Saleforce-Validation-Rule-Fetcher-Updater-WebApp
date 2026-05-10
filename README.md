@@ -1,71 +1,94 @@
 # SF Validation Manager
 
-A web app to manage Salesforce Account validation rules — fetch, enable, disable, and deploy changes directly from the browser.
+Manage Salesforce Account validation rules from a web app — fetch, enable, disable, and deploy changes.
 
-## Project Structure
+## Stack
 
-```
-frontend/          React + Vite + Tailwind CSS
-springboot-backend/ Java Spring Boot backend
-```
+- **Frontend**: React + Vite + Tailwind CSS → deployed on **Netlify**
+- **Backend**: Java Spring Boot → deployed on **Render**
 
-## Setup
+---
 
-### 1. Salesforce Connected App
+## Local Development
 
-1. Go to Salesforce Setup → External Client App Manager → New
-2. Enable OAuth, set Callback URL: `http://localhost:8080/oauth2/callback`
-3. Add scopes: `api`, `web`, `refresh_token`
-4. Save and copy Consumer Key + Consumer Secret
-
-### 2. Backend (Node.js)
-
-> Note: Node.js backend files are in the `nodejs-backend` folder if present.
-
-```bash
-cd nodejs-backend
-cp .env.example .env
-# Fill in SF_CLIENT_ID and SF_CLIENT_SECRET
-npm install
-node server.js
-```
-Runs on http://localhost:8080
-
-### 3. Backend (Spring Boot)
-
+### Backend (Spring Boot)
 ```bash
 cd springboot-backend
-# Set environment variables:
-# SF_CLIENT_ID, SF_CLIENT_SECRET, SF_REDIRECT_URI, FRONTEND_URL
 mvn spring-boot:run
 ```
-Runs on http://localhost:8081
+Set these environment variables first:
+```
+SF_CLIENT_ID=your_consumer_key
+SF_CLIENT_SECRET=your_consumer_secret
+SF_REDIRECT_URI=http://localhost:8081/oauth2/callback
+FRONTEND_URL=http://localhost:5173
+```
 
-### 4. Frontend
-
+### Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Runs on http://localhost:5173
+Open http://localhost:5173
 
-## Environment Variables
+---
 
-| Variable | Description |
-|---|---|
-| `SF_CLIENT_ID` | Salesforce Connected App Consumer Key |
-| `SF_CLIENT_SECRET` | Salesforce Connected App Consumer Secret |
-| `SF_REDIRECT_URI` | `http://localhost:8080/oauth2/callback` |
-| `FRONTEND_URL` | `http://localhost:5173` |
-| `SESSION_SECRET` | Any random string |
-| `PORT` | Backend port (default 8080) |
+## Deployment
 
-## Features
+### Step 1 — Deploy Backend on Render
 
-- Login with any Salesforce org via OAuth 2.0
-- Fetch Account validation rules
-- Toggle rules on/off
-- Enable All / Disable All
-- Deploy changes to Salesforce
-- Rollback pending changes
+1. Go to [render.com](https://render.com) → New → Web Service
+2. Connect your GitHub repo
+3. Set:
+   - **Root Directory**: `springboot-backend`
+   - **Build Command**: `mvn clean package -DskipTests`
+   - **Start Command**: `java -jar target/*.jar`
+   - **Environment**: Java
+4. Add Environment Variables:
+   ```
+   SF_CLIENT_ID=your_consumer_key
+   SF_CLIENT_SECRET=your_consumer_secret
+   SF_REDIRECT_URI=https://your-app.onrender.com/oauth2/callback
+   FRONTEND_URL=https://your-app.netlify.app
+   ```
+5. Deploy → copy your Render URL (e.g. `https://sf-manager.onrender.com`)
+
+### Step 2 — Update Salesforce Connected App
+
+In Salesforce Setup → External Client App Manager → your app → Edit:
+
+Change Callback URL to:
+```
+https://your-app.onrender.com/oauth2/callback
+```
+
+### Step 3 — Deploy Frontend on Netlify
+
+1. Go to [netlify.com](https://netlify.com) → New Site → Import from Git
+2. Connect your GitHub repo
+3. Set:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `frontend/dist`
+4. Update `frontend/netlify.toml` — replace `your-app.onrender.com` with your actual Render URL
+5. Deploy → copy your Netlify URL (e.g. `https://sf-manager.netlify.app`)
+
+### Step 4 — Update Render FRONTEND_URL
+
+Go back to Render → your service → Environment → update:
+```
+FRONTEND_URL=https://sf-manager.netlify.app
+```
+
+---
+
+## Environment Variables Reference
+
+| Variable | Local | Production |
+|---|---|---|
+| `SF_CLIENT_ID` | Consumer Key | same |
+| `SF_CLIENT_SECRET` | Consumer Secret | same |
+| `SF_REDIRECT_URI` | `http://localhost:8081/oauth2/callback` | `https://your-app.onrender.com/oauth2/callback` |
+| `FRONTEND_URL` | `http://localhost:5173` | `https://your-app.netlify.app` |
+| `PORT` | 8081 | set by Render automatically |
