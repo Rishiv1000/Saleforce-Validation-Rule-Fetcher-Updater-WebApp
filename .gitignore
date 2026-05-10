@@ -5,6 +5,7 @@ npm-debug.log*
 # Environment variables — NEVER commit these
 .env
 .env.local
+springboot-backend/.env
 
 # Frontend build
 frontend/dist/
