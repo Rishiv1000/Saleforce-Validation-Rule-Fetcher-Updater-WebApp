@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+
+# Frontend build
+frontend/dist/
+frontend/.vite/
+
+# Spring Boot build
+springboot-backend/target/
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
