@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sfmanager.model.SalesforceSession;
 import com.sfmanager.model.ValidationRule;
 import com.sfmanager.request.BulkToggleRequest;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,7 +20,15 @@ import java.util.List;
 public class SalesforceApiService {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final RestTemplate rest   = new RestTemplate();
+    private final RestTemplate rest;
+
+    public SalesforceApiService() {
+        // Use Apache HttpClient to support PATCH method
+        HttpClient httpClient = HttpClients.createDefault();
+        HttpComponentsClientHttpRequestFactory factory =
+            new HttpComponentsClientHttpRequestFactory(httpClient);
+        this.rest = new RestTemplate(factory);
+    }
 
     private HttpHeaders headers(String token) {
         HttpHeaders h = new HttpHeaders();
@@ -61,11 +72,13 @@ public class SalesforceApiService {
         if (id == null || id.isEmpty()) {
             throw new RuntimeException("Rule ID is null or empty");
         }
+
         JsonNode existing = getRuleMetadata(sf, id);
         JsonNode metaNode = existing.get("Metadata");
         if (metaNode == null) {
             throw new RuntimeException("Metadata not found for rule: " + id);
         }
+
         ObjectNode meta = (ObjectNode) mapper.readTree(metaNode.toString());
         meta.put("active", active);
 
