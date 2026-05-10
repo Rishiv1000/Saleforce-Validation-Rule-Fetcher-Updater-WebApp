@@ -37,14 +37,9 @@ cd springboot-backend
 cp .env.example .env
 ```
 
-<<<<<<< HEAD
 Fill in `.env` with your Salesforce credentials:
 
 ```env
-=======
-Edit `.env` and fill in your values:
-```c
->>>>>>> 060b522 (test)
 SF_CLIENT_ID=your_consumer_key
 SF_CLIENT_SECRET=your_consumer_secret
 SF_REDIRECT_URI=http://localhost:8081/oauth2/callback
@@ -84,10 +79,3 @@ npm run dev
 Runs on **http://localhost:5173**
 
 ---
-
-
----
-
-## License
-
-MIT
