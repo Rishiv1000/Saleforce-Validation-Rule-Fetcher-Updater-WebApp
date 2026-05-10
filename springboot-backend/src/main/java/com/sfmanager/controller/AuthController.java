@@ -28,13 +28,11 @@ public class AuthController {
                 ? "https://test.salesforce.com"
                 : "https://login.salesforce.com";
 
-        String verifier  = oAuthService.generateCodeVerifier();
-        String challenge = oAuthService.generateCodeChallenge(verifier);
-
-        session.setAttribute("codeVerifier", verifier);
         session.setAttribute("loginUrl", loginUrl);
 
-        response.sendRedirect(oAuthService.buildAuthorizationUrl(loginUrl, challenge));
+        // No PKCE — plain OAuth2 Authorization Code flow
+        String authUrl = oAuthService.buildAuthorizationUrl(loginUrl, null);
+        response.sendRedirect(authUrl);
     }
 
     @GetMapping({"/auth/callback", "/oauth2/callback"})
@@ -56,15 +54,12 @@ public class AuthController {
             return;
         }
 
-        String verifier  = (String) session.getAttribute("codeVerifier");
-        String loginUrl  = (String) session.getAttribute("loginUrl");
+        String loginUrl = (String) session.getAttribute("loginUrl");
         if (loginUrl == null) loginUrl = "https://login.salesforce.com";
 
         try {
-            SalesforceSession sf = oAuthService.exchangeCode(code, verifier, loginUrl);
+            SalesforceSession sf = oAuthService.exchangeCode(code, null, loginUrl);
 
-            session.removeAttribute("codeVerifier");
-            session.removeAttribute("loginUrl");
             session.setAttribute("accessToken",  sf.getAccessToken());
             session.setAttribute("instanceUrl",  sf.getInstanceUrl());
             session.setAttribute("refreshToken", sf.getRefreshToken());

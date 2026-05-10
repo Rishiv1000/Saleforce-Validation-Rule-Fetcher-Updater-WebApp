@@ -34,13 +34,16 @@ public class OAuthService {
     }
 
     public String buildAuthorizationUrl(String loginUrl, String challenge) {
-        return loginUrl + "/services/oauth2/authorize"
+        String url = loginUrl + "/services/oauth2/authorize"
                 + "?response_type=code"
-                + "&client_id="     + config.getClientId()
-                + "&redirect_uri="  + config.getRedirectUri()
-                + "&scope=api+web+refresh_token"
-                + "&code_challenge=" + challenge
-                + "&code_challenge_method=S256";
+                + "&client_id="    + config.getClientId()
+                + "&redirect_uri=" + config.getRedirectUri()
+                + "&scope=api+web+refresh_token";
+
+        if (challenge != null) {
+            url += "&code_challenge=" + challenge + "&code_challenge_method=S256";
+        }
+        return url;
     }
 
     public SalesforceSession exchangeCode(String code, String verifier, String loginUrl) throws Exception {
