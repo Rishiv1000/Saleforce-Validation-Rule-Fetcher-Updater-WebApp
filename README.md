@@ -27,6 +27,7 @@
    ```
 3. Enable OAuth Scopes: `api`, `web`, `refresh_token`
 4. Save, then copy your **Consumer Key** and **Consumer Secret**
+5. DISABLE THIS -> Require Proof Key for Code Exchange (PKCE) extension for Supported Authorization Flows 
 
 ---
 
